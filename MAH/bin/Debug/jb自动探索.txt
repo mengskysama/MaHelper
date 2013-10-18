@@ -1,0 +1,108 @@
+﻿//网络连接超时，被挤下线
+//IFColor X=223 Y=217 Color [A=255, R=109, G=109, B=109]
+//登陆右上角X
+//IFColor X=925 Y=7 Color [A=255, R=173, G=35, B=35]
+//第一个妖精时间
+//IFColor X=245 Y=91 Color [A=255, R=97, G=195, B=214]
+//定义最后登录时间，在30秒内不进入超时等待
+Var TIME lastlogintime
+//主循环开始
+:LOOP
+Sleep 1000
+Debug =LOOP begin=
+UpdataImg
+//更新血量
+UpdateBloodImg
+//向服务器发送
+SendAPBC
+//判断是否提示妖精出现
+	IFTIME S=0 E=0
+		Debug 当前时间在探索范围内
+		IFAPBC AP>40 BC>40
+			Debug AP BC 满足探索条件
+			Touch X=867 Y=192
+			Sleep 10000
+			//等待列表加载完毕
+			WaitColor T=30000 X=473 Y=210 Color [A=255, R=63, G=143, B=188]
+				Goto RESTART
+				//这个注释不能删
+				//这个注释不能删
+			Debug 选择第一个地图进行攻略
+			Touch X=692 Y=206
+			Sleep 2000
+			//等待子列表加载
+			WaitColor T=30000 X=486 Y=223 Color [A=255, R=255, G=255, B=255]
+				Goto RESTART
+				//这个注释不能删
+				//这个注释不能删
+			Touch X=692 Y=206
+			Debug 等待进入区域
+			Sleep 8000
+			:DOSEARCH
+			//等待前进按钮出现
+			WaitColor T=30000 X=872 Y=121 Color [A=255, R=228, G=41, B=41]
+				Goto RESTART
+				Touch X=550 Y=330
+				Touch X=550 Y=210
+			Sleep 1000
+			Touch X=872 Y=121
+			Debug 点击前进
+			Sleep 3000
+			//这里可能出现获取卡牌
+			//同时可以点掉无响应和卡片
+			//这里可能出现妖精
+			WaitColor T=50000 X=872 Y=121 Color [A=255, R=228, G=41, B=41]
+				Goto RESTART
+				Touch X=550 Y=330
+				Touch X=550 Y=210
+			Sleep 1000
+			UpdataImg
+			//判断血条出现
+			IFColor X=500 Y=469 PointColorAEqual [A=255, R=245, G=65, B=74]
+				//妖精出现
+				Debug 向服务器发送设置卡组信息
+				SetCard 2
+				Debug 进入倒计时界面
+				//注意这里卡牌没有设置直接点BOSS
+				Touch X=879 Y=70
+				//可能会提示已被消灭不过不影响本程序执行
+				Debug 点击战斗
+				//向服务器发送舔怪记录
+				SendCnt
+				//等待开头坑爹动画
+				Sleep 16000
+				Touch X=97 Y=454
+				Debug 点击屏幕跳过坑爹动画
+				//等待经验值统计
+				//最大等待三十秒否则重进游戏
+				WaitColor T=50000 X=870 Y=122 Color [A=255, R=207, G=23, B=23]
+					Goto RESTART
+					Touch X=550 Y=330
+					Touch X=550 Y=210
+				Debug 回到倒计时界面
+				//无响应可能在这里才出现
+				Sleep 2000
+				//点击无响应
+				Touch X=550 Y=330
+				Touch X=550 Y=210
+				Sleep 1000
+				//点击返回到秘境继续探索
+				Touch X=874 Y=469
+				Debug 点击返回到秘境
+				Sleep 3000
+				//等待前进按钮出现
+				WaitColor T=30000 X=872 Y=121 Color [A=255, R=228, G=41, B=41]
+					Goto RESTART
+					//这个注释不能删
+					//这个注释不能删
+				Sleep 1000
+			EndIF
+			//更新血量
+			UpdateBloodImg
+			IFAPBC AP>10 BC>10
+				Goto DOSEARCH
+			EndIF
+		EndIF
+	EndIF
+	Goto LOOP
+EndIF
