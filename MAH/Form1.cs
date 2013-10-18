@@ -12,8 +12,7 @@ using Microsoft.Win32;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using SharpPcap.LibPcap;
-using SharpPcap;
+
 
 namespace MAH
 {
@@ -30,8 +29,6 @@ namespace MAH
         
         public int sleepdelay = 0;
 
-        LibPcapLiveDeviceList devicelist = null;
-        LibPcapLiveDevice usedev = null;
 
         INI ini = null;
 
@@ -248,14 +245,6 @@ namespace MAH
 
             
             //初始化AIRPACP
-
-            devicelist = LibPcapLiveDeviceList.Instance;
-            foreach (LibPcapLiveDevice dev in devicelist)
-            {
-                string s = dev.ToString();
-                s = s.Substring(s.IndexOf("FriendlyName: ") + 14, 60);
-                comboBox1.Items.Add(s);
-            }
 
 
             string st = string.Empty;
@@ -1073,123 +1062,23 @@ namespace MAH
 
         private void button10_Click(object sender, EventArgs e)
         {
-            int n = comboBox1.SelectedIndex;
-            if (n >= 0 && n < devicelist.Count)
-            {
-                usedev = devicelist[n];
-                ini.IniWriteValue("DEVICE", "netcard", n.ToString());
-            }
-            else
-            {
-                MessageBox.Show("请从左侧下拉框选择设备");
-                return;
-            }
+
 
         }
 
         private void GetPacket()
         {
-            usedev.Open();
-            usedev.Filter = "port 10001";
-
-            try
-            {
-                while (true)
-                {
-                    try
-                    {
-                        usedev.Capture(1);
-                        RawCapture c = usedev.GetNextPacket();
-                        if (c != null)
-                        {
-                            byte[] b = c.Data;
-                            for (int i = 0; i < b.Length; i++)
-                                if (b[i] == 0)
-                                    b[i] = 11;
-
-                            string str = System.Text.Encoding.ASCII.GetString(b);
-                            if (str.IndexOf("ma.sdo") != -1 && str.IndexOf("&me=1") == -1)
-                            {
-                                int begin1 = str.IndexOf("Cookie");
-                                int begin2 = str.IndexOf("Cookie2");
-                                if (begin1 != -1 && begin2 != -1)
-                                {
-                                    cookie = str.Substring(begin1, str.IndexOf("\r\n", begin1) - begin1);
-                                    cookie2 = str.Substring(begin2, str.IndexOf("\r\n", begin2) - begin2);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }
-            }
-            catch (ThreadAbortException)
-            {
-                usedev.Close();
-            }
         }
 
         //获取设置卡组数据
         private int getcarddata(int cardcount, ref string cookie1, ref string cookie2, ref string main)
         {
-            usedev.Open();
-            usedev.Filter = "port 10001";
-            while (true)
-            {
-                usedev.Capture(1);
-                RawCapture c = usedev.GetNextPacket();
-                if (c != null)
-                {
-                    byte[] b = c.Data;
-                    for (int i = 0; i < b.Length; i++)
-                        if (b[i] == 0)
-                            b[i] = 11;
-
-                    string str = System.Text.Encoding.ASCII.GetString(b);
-                    if (str.IndexOf("savedeckcard?cyt=1") != -1)
-                    {
-                        int begin = str.IndexOf("C=");
-
-                        int begin1 = str.IndexOf("Cookie");
-
-                        int begin2 = str.IndexOf("Cookie2");
-
-                        if (begin != -1 && begin1 != -1 && begin2 != -1)
-                        {
-                            main = str.Substring(begin, str.IndexOf("%3D%3D%0A", begin) - begin + 9);
-                            cookie1 = str.Substring(begin1, str.IndexOf("\r\n", begin1) - begin1);
-                            cookie2 = str.Substring(begin2, str.IndexOf("\r\n", begin2) - begin2);
-                            usedev.Close();
-                            return 1;
-                        }
-                        else
-                        {
-                            MessageBox.Show("解析数据失败");
-                            usedev.Close();
-                            return -1;
-                        }
-                    }
-                }
-            }
-            return 0;
+            return 1;
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-            if (usedev == null)
-            {
-                MessageBox.Show("请先选择网卡");
-                return;
-            }
 
-            MessageBox.Show("点击确定后，进游戏保存一次卡组，若成功会提示，如果长时间没反应说明选错网卡了= = 自己结束进程吧我不管了");
-
-            getcarddata(1, ref cookie, ref cookie2, ref d1);
-            ini.IniWriteValue("CARD", "card1", d1);
-
-            MessageBox.Show("舔怪卡1保存成功");
         }
 
         private void button12_Click(object sender, EventArgs e)
@@ -1401,44 +1290,7 @@ namespace MAH
 
         private void button20_Click(object sender, EventArgs e)
         {
-            if (usedev == null)
-            {
-                MessageBox.Show("请先选择网卡");
-                return;
-            }
 
-            MessageBox.Show("请按如下方式操作\n1.进入卡牌菜单配好卡组,要求至少三张卡组\n2.并且将配卡切换到右边(有自动配卡按钮界面)，并且不能最小化\n3.然后再点本窗口的确定");
-
-            SysMsg.ShotEvent();
-            Bitmap bmp = Tcp.GetBitmap();
-            Color c = bmp.GetPixel(452, 46);
-            Color c1 = bmp.GetPixel(333, 46);
-            Color c2 = bmp.GetPixel(200, 46);
-            if (c.R == 50 || c1.R == 50 || c2.R == 50)
-            {
-                MessageBox.Show("要求至少三张卡组");
-                return;
-            }
-
-            SysMsg.MouseEvent(0, 800, 57);
-            Thread.Sleep(1);
-            SysMsg.MouseEvent(1, 800, 57);
-
-            DateTime dt = DateTime.Now;
-            getcarddata(1, ref cookie, ref cookie2, ref d3);
-
-            TimeSpan sp = new TimeSpan();
-            sp = DateTime.Now - dt;
-
-            if (sp.TotalSeconds < 6)
-            {
-                ini.IniWriteValue("HKG", "card", d3);
-                MessageBox.Show("卡组保存成功");
-            }
-            else
-            {
-                MessageBox.Show("卡组设置失败");
-            }
         }
 
         private void groupBox2_Enter(object sender, EventArgs e)
