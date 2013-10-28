@@ -258,5 +258,10 @@ namespace MAH
             else
                 HTTP.url = "http://mabi.mengsky.net/";
         }
+
+        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        {
+            MA.host = "game3-CBT.ma.sdo.com:10001";
+        }
     }
 }

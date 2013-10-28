@@ -225,6 +225,7 @@ namespace MAH
 
             //
             frmtray = new Tray(this);
+            
             //hehe
             Script.frm = this;
             SysMsg.frm = this;
@@ -1330,7 +1331,7 @@ namespace MAH
                 MessageBox.Show("和绑定账号不一致!");
                 return;
             }
-
+            notifyIcon1.Text = textBox3.Text;
 
             MA_Client.usesell = (checkBox3.Checked ? 1 : 0);
             MA_Client.useselln = (int)numericUpDown15.Value;
@@ -1836,14 +1837,14 @@ namespace MAH
             if (textBox3.Text.Substring(textBox3.Text.Length-2) != HTTP.login_last2)
             {
                 MessageBox.Show("和绑定账号不一致!");
-                //return;
+                return;
             }
 
             MA_Client.login_id = textBox3.Text;//textBox3.Text;
             MA_Client.login_password = textBox4.Text;//textBox4.Text;
             ini.IniWriteValue("TJ", "user", textBox3.Text);
             ini.IniWriteValue("TJ", "pass", textBox4.Text);
-
+            notifyIcon1.Text = textBox3.Text;
 
             try
             {
