@@ -232,14 +232,14 @@ namespace MAH
             frm = this;
 
             Log.Log_Create();
-
+            RSA.Init();
           
             pictureBox1.Hide();
 
-            if (MessageBox.Show("脱机请选是,BS脚本请选否", "MAH", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
-            {
-                Tcp.AcceptTcp();
-            }
+            //if (MessageBox.Show("脱机请选是,BS脚本请选否", "MAH", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+            //{
+            //    Tcp.AcceptTcp();
+            //}
 
             Thread t = new Thread(RecvCMD);
             t.Start();
@@ -747,37 +747,37 @@ namespace MAH
 
             //初始化基本参数
 
-            try
-            {
-                RegistryKey HKLM = Registry.LocalMachine;
-                RegistryKey Run = HKLM.OpenSubKey(@"SOFTWARE\BlueStacks\Guests\Android\FrameBuffer\0");
-                int Height = int.Parse(Run.GetValue("Height").ToString());
-                int Width = int.Parse(Run.GetValue("Width").ToString());
-                if (Height != 576 || Width != 1024)
-                {
-                    if (MessageBox.Show("检测到BlueStacks分辨率不是1024X576，是否进行修改", "notice",
-                    MessageBoxButtons.OKCancel,
-                    MessageBoxIcon.Question) == DialogResult.OK)
-                    {
-                        Run.SetValue("Height", 576);
-                        Run.SetValue("Width", 1024);
-                        MessageBox.Show("修改成功，请重新退出模拟器重进");
-                    }
-                    else
-                    {
-                        Environment.Exit(0);
-                    }
-                }
-            }
-            catch (System.ArgumentNullException)
-            {
-                MessageBox.Show("没有安装BlueStacks?");
-                Environment.Exit(0);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("没有安装BlueStacks?，如果使用脱机请无视.");
-            }
+            //try
+            //{
+            //    RegistryKey HKLM = Registry.LocalMachine;
+            //    RegistryKey Run = HKLM.OpenSubKey(@"SOFTWARE\BlueStacks\Guests\Android\FrameBuffer\0");
+            //    int Height = int.Parse(Run.GetValue("Height").ToString());
+            //    int Width = int.Parse(Run.GetValue("Width").ToString());
+            //    if (Height != 576 || Width != 1024)
+            //    {
+            //        //if (MessageBox.Show("检测到BlueStacks分辨率不是1024X576，是否进行修改", "notice",
+            //        //MessageBoxButtons.OKCancel,
+            //        //MessageBoxIcon.Question) == DialogResult.OK)
+            //        //{
+            //        //    Run.SetValue("Height", 576);
+            //        //    Run.SetValue("Width", 1024);
+            //        //    MessageBox.Show("修改成功，请重新退出模拟器重进");
+            //        //}
+            //        else
+            //        {
+            //            Environment.Exit(0);
+            //        }
+            //    }
+            //}
+            //catch (System.ArgumentNullException)
+            //{
+            //    MessageBox.Show("没有安装BlueStacks?");
+            //    Environment.Exit(0);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("没有安装BlueStacks?，如果使用脱机请无视.");
+            //}
 
 
 
@@ -786,7 +786,7 @@ namespace MAH
         private void RunScript()
         {
             int i = 0;
-            int px = 0, py = 0;
+            //int px = 0, py = 0;
 
             MessageBox.Show("开始执行脚本.作者很懒所以会假死= = /你可以干别的事情/，亚瑟王窗体可以覆盖，。。。10分钟之内解决问题");
             while(true)
@@ -1326,11 +1326,6 @@ namespace MAH
                 return;
             }
 
-            if (textBox3.Text.Substring(textBox3.Text.Length - 2) != HTTP.login_last2)
-            {
-                MessageBox.Show("和绑定账号不一致!");
-                return;
-            }
             notifyIcon1.Text = textBox3.Text;
 
             MA_Client.usesell = (checkBox3.Checked ? 1 : 0);
@@ -1559,7 +1554,7 @@ namespace MAH
 
                 foreach (MA.MA_Card card in MA.cardlst)
                 {
-                    if (checkBox6.Checked == true && card.lv < 3)
+                    if (checkBox6.Checked == true && card.lv < 10)
                     {
                         continue;
                     }
@@ -1836,8 +1831,8 @@ namespace MAH
 
             if (textBox3.Text.Substring(textBox3.Text.Length-2) != HTTP.login_last2)
             {
-                MessageBox.Show("和绑定账号不一致!");
-                return;
+                //MessageBox.Show("和绑定账号不一致!");
+                //return;
             }
 
             MA_Client.login_id = textBox3.Text;//textBox3.Text;
@@ -1953,21 +1948,31 @@ namespace MAH
 
                 if (editcard == 1)
                 {
+                    if (c1.Text == "")
+                    {
+                        MessageBox.Show("保存失败,卡组至少1卡");
+                        return;
+                    }
                     MA_Client.card1 = str;
                     MA_Client.card1l = leader;
                     MA.cardselect_savedeckcard(str, leader);
                 }
                 else if (editcard == 2)
                 {
+                    if (c1.Text == "")
+                    {
+                        MessageBox.Show("保存失败,卡组至少1卡");
+                        return;
+                    }
                     MA_Client.card2 = str;
                     MA_Client.card2l = leader;
                     MA.cardselect_savedeckcard(str, leader);
                 }
                 else if (editcard == 3)
                 {
-                    if (c1.Text == "" || c2.Text == "")
+                    if (c1.Text == "")
                     {
-                        MessageBox.Show("保存失败,探索卡组至少2卡");
+                        MessageBox.Show("保存失败,卡组至少1卡");
                         return;
                     }
                     MA_Client.card3 = str;
@@ -2169,6 +2174,11 @@ namespace MAH
         {
             putinselllist(3);
             MessageBox.Show("= =!! 请注意 妹抖,超级切尔利 也在列表里哦!请手动删除!");
+        }
+
+        private void checkBox14_CheckedChanged(object sender, EventArgs e)
+        {
+            MA_Client.onlyjx = (checkBox14.Checked ? 1 : 0);
         }
 
     }

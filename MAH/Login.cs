@@ -22,25 +22,6 @@ namespace MAH
 
         public Login()
         {
-            System.Management.ManagementClass mc = new ManagementClass("win32_processor");
-            ManagementObjectCollection moc = mc.GetInstances();
-            string cpuid = "";
-            foreach (ManagementObject mo in moc)
-            {
-                cpuid += mo["processorid"].ToString();
-            }
-
-            mc = new ManagementClass("Win32_BaseBoard");
-            moc = mc.GetInstances();
-            string boardid = "";
-            foreach (ManagementObject mo in moc)
-            {
-                boardid += mo.Properties["SerialNumber"].Value.ToString();
-                break;
-            }
-
-            HTTP.code = HTTP.EncryptMD5(cpuid + cpuid + boardid).Substring(0, 10);
-            string key = HTTP.EncryptMD5(HTTP.EncryptMD5(HTTP.code + HTTP.code.Substring(2))).Substring(5);
             //if (!File.Exists(Application.StartupPath + "\\" + key))
             //{
             //    Clipboard.SetDataObject(HTTP.code);
@@ -66,49 +47,15 @@ namespace MAH
                 MessageBox.Show("失败原因:" + ex.Message + ",可能是服务器间歇性抽风或者版本更新,多试几次");
                 return;
             }
-            if (ret != null)
-            {
-                try
-                {
-                    Script.scr = ret;
-                    if (radioButton3.Checked == false)
-                    {
-                        HTTP.ua = ret.Substring(2, ret.IndexOf('#') - 2);
-                    }
-                    else
-                    {
-                        string ua2 = ret.Substring(ret.IndexOf('#') + 2);
-                        HTTP.ua = ua2.Substring(2, ua2.IndexOf('#') - 2);
-                    }
-                    AES.key = ret.Substring(ret.IndexOf("//K=") + 4, 16);
-                    HTTP.user = textBox1.Text;
-                    HTTP.pass = pass;
-                    HTTP.login_last2 = ret.Substring(ret.IndexOf("//L2=") + 5, 2);
-                    ini.IniWriteValue("LOGIN", "user", textBox1.Text);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("从服务器获取数据有误，请重试!");
-                    return;
-                }
-                Form1 f = new Form1();
-                this.Hide();
-                f.Show();
-            }
-            else
-            {
-                MessageBox.Show("验证失败");
-                return;
-            }
+
+            Form1 f = new Form1();
+            this.Hide();
+            f.Show();
         }
 
 
         private void Login_Load(object sender, EventArgs e)
         {
-            //string b64str = System.Web.HttpUtility.UrlDecode("04%2B%2F31NZlCGBddugZ7bq6kar9Y0LFJhTeZ4lYv4aIN%2FER7ZPxF7twnLVC%2F8tW3cUfkjXTkOnaZf%2B%0AzCOhfUUhLA%3D%3D%0A");
-            //byte[] undecryptbyte = Convert.FromBase64String(b64str);
-            //string decryptstr = AES.Decrypt(undecryptbyte);
-            //byte[] b = Convert.FromBase64String(decryptstr);
             //string d;
             //d = Encoding.ASCII.GetString(b);
 
@@ -138,7 +85,7 @@ namespace MAH
         {
             if (textBox1.Text.Length == 0 || textBox2.Text.Length == 0 || textBox4.Text.Length != 2)
             {
-                MessageBox.Show("请输入正确用户名密码或绑定手机来注册");
+                MessageBox.Show("请输入正确用户名密码以及帐号后两位来注册");
                 return;
             }
             string pass = HTTP.EncryptMD5(HTTP.EncryptMD5(textBox2.Text));

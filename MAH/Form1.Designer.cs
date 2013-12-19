@@ -84,6 +84,7 @@
             this.numericUpDown6 = new System.Windows.Forms.NumericUpDown();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.checkBox14 = new System.Windows.Forms.CheckBox();
             this.checkBox13 = new System.Windows.Forms.CheckBox();
             this.numericUpDown22 = new System.Windows.Forms.NumericUpDown();
             this.label33 = new System.Windows.Forms.Label();
@@ -851,6 +852,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.checkBox14);
             this.groupBox3.Controls.Add(this.checkBox13);
             this.groupBox3.Controls.Add(this.numericUpDown22);
             this.groupBox3.Controls.Add(this.label33);
@@ -905,6 +907,18 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "脱机区";
             this.groupBox3.Enter += new System.EventHandler(this.groupBox3_Enter);
+            // 
+            // checkBox14
+            // 
+            this.checkBox14.AutoSize = true;
+            this.checkBox14.ForeColor = System.Drawing.Color.Red;
+            this.checkBox14.Location = new System.Drawing.Point(331, 409);
+            this.checkBox14.Name = "checkBox14";
+            this.checkBox14.Size = new System.Drawing.Size(72, 16);
+            this.checkBox14.TabIndex = 97;
+            this.checkBox14.Text = "只添觉醒";
+            this.checkBox14.UseVisualStyleBackColor = true;
+            this.checkBox14.CheckedChanged += new System.EventHandler(this.checkBox14_CheckedChanged);
             // 
             // checkBox13
             // 
@@ -1524,9 +1538,9 @@
             this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox6.Location = new System.Drawing.Point(157, 27);
             this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(78, 16);
+            this.checkBox6.Size = new System.Drawing.Size(84, 16);
             this.checkBox6.TabIndex = 25;
-            this.checkBox6.Text = "过滤<Lv.3";
+            this.checkBox6.Text = "过滤<Lv.10";
             this.checkBox6.UseVisualStyleBackColor = true;
             // 
             // label28
@@ -2020,7 +2034,7 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MA更新狂魔";
+            this.Text = "MA更新狂魔 嘛工作找到了去现充了，不更新了，各位走好";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
@@ -2214,6 +2228,7 @@
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.CheckBox checkBox13;
         private System.Windows.Forms.Button button37;
+        private System.Windows.Forms.CheckBox checkBox14;
     }
 }
 

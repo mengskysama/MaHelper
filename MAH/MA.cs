@@ -103,50 +103,62 @@ namespace MAH
         public static string ma_prepare_request(List<ReqParama> reqparams = null)
         {
             string postdata = "";
+
+            AES.InitKey();
+
             foreach (ReqParama reqparma in reqparams)
             {
+
                 if (postdata != "")
                     postdata += "&";
+                
                 postdata += reqparma.ParamaName + "=" + System.Uri.EscapeDataString(AES.Encrypt(reqparma.ParamaValue)) +"%0A";
             }
+            return postdata;
+        }
+
+        public static string ma_prepare_login_request(List<ReqParama> reqparams = null)
+        {
+            string postdata = "";
+
+            AES.InitKey();
+
+            foreach (ReqParama reqparma in reqparams)
+            {
+
+                if (postdata != "")
+                    postdata += "&";
+
+                string aes = AES.Encrypt(reqparma.ParamaValue);
+                string rsa = RSA.RSAEncrypt(aes);
+
+                postdata += reqparma.ParamaName + "=" + System.Uri.EscapeDataString(rsa) + "%0A";
+            }
+
             return postdata;
         }
 
         //post request to ma webserver and load XML
         public static void ma_request(string uri, string postdata)
         {
+
+            if (MA.host != "game.ma.mobimon.com.tw:10001")
+            { 
+                string key = "K=" + System.Uri.EscapeDataString(RSA.RSAEncrypt(Convert.ToBase64String(AES.rDel.Key))) + "%0A";
+                if (postdata.Length > 0)
+                    postdata = key + "&" + postdata;
+                else
+                postdata = key;
+            }
+
             byte[] undecryptbyte = HTTP.HttpPost1("http://" + host + uri, postdata, Script.frm.cookie, Script.frm.cookie2, 1);
+
             try
             {
                 if (undecryptbyte == null)
                     return;
 
-                if (uri == "/connect/app/notification/post_devicetoken?cyt=1")
-                {
-                    //获取登陆cookie
-                    return;
-                }
-
                 string decryptstr = AES.Decrypt(undecryptbyte);
-
-                if (uri == "/connect/app/check_inspection?cyt=1")
-                {
-                    //获取登陆cookie
-                    string [] sz = decryptstr.Split(',');
-                    if (sz == null)
-                    {
-                        throw new Exception("get interface faild");
-                    }
-                    if (sz.Length < 3)
-                    {
-                        throw new Exception("盛犬有诈?");
-                    }
-                    if (sz[3] != "http://" + MA.host + "/connect/app/")
-                    {
-                        throw new Exception("盛犬有诈?");
-                    }
-                    return;
-                }
 
                 if (decryptstr.IndexOf("<?xml") != 0)
                     throw new Exception("Not XML File");
@@ -173,7 +185,7 @@ namespace MAH
                     throw new Exception("Unkown Data format!");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -466,16 +478,21 @@ namespace MAH
              //   throw new Exception("UA Error");
 
 
-            check_inspection();
+            //check_inspection();
 
-            if (interrupt == 0)
-                notification_post_devicetoken(login_id, password);
+            //if (interrupt == 0)
+            //    notification_post_devicetoken(login_id, password);
 
             List<ReqParama> reqparams = new List<ReqParama>();
             reqparams.Add(new ReqParama("login_id", login_id));
             reqparams.Add(new ReqParama("password", password));
 
-            string postdata = ma_prepare_request(reqparams);
+            string postdata;
+            if (MA.host == "game.ma.mobimon.com.tw:10001")
+                postdata = ma_prepare_request(reqparams);
+            else
+                postdata = ma_prepare_login_request(reqparams);
+            
             ma_request("/connect/app/login?cyt=1", postdata);
 
             update();
@@ -729,33 +746,6 @@ namespace MAH
 
         }
 
-        //报告一个无名亚瑟
-        public static void SendNoname(object uid)
-        {
-            string noname_uid = (string)uid;
-            if (MA.host == "game1-CBT.ma.sdo.com:10001")
-            {
-                HTTP.HttpGet(HTTP.url + "d.php?t=Noname&win=1&l=1&u=" + HTTP.user + "&p=" + HTTP.pass + "&d=" + noname_uid.ToString() + Script.make_chk(noname_uid.ToString()));
-            }
-            else if (MA.host == "game2-CBT.ma.sdo.com:10001")
-            {
-                HTTP.HttpGet(HTTP.url + "d.php?t=Noname&win=1&l=2&u=" + HTTP.user + "&p=" + HTTP.pass + "&d=" + noname_uid.ToString() + Script.make_chk(noname_uid.ToString()));
-            }
-        }
-
-        //无名亚瑟失败
-        public static void SendNonameFaild(object uid)
-        {
-            string noname_uid = (string)uid;
-            if (MA.host == "game1-CBT.ma.sdo.com:10001")
-            {
-                HTTP.HttpGet(HTTP.url + "d.php?t=Noname&win=0&l=1&u=" + HTTP.user + "&p=" + HTTP.pass + "&d=" + noname_uid.ToString() + Script.make_chk(noname_uid.ToString()));
-            }
-            else if (MA.host == "game2-CBT.ma.sdo.com:10001")
-            {
-                HTTP.HttpGet(HTTP.url + "d.php?t=Noname&win=0&l=2&u=" + HTTP.user + "&p=" + HTTP.pass + "&d=" + noname_uid.ToString() + Script.make_chk(noname_uid.ToString()));
-            }
-        }
 
         //搜索无名亚瑟进行因子战
         public static void noname0048()
@@ -820,8 +810,6 @@ namespace MAH
                     if (battle_result_nodes[0]["winner"].InnerText == "1")
                     {
                         Script.frm.LogUpdateFunction("因子战胜利");
-                        Thread t = new Thread(new ParameterizedThreadStart(SendNoname));
-                        t.Start(uid);
                         yinzi_win++;
                     }
                     else
@@ -867,8 +855,6 @@ namespace MAH
                         else
                         {
                             Script.frm.LogUpdateFunction("因子战失败");
-                            Thread t = new Thread(new ParameterizedThreadStart(SendNonameFaild));
-                            t.Start(uid);
                             yinzi_lose++;
                         }
                         Thread.Sleep(20000);

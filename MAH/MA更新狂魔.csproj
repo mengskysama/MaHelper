@@ -53,6 +53,10 @@
     <ApplicationIcon>touhou-_0000_-----1.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.7.4114.6375, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="Elixis">
       <HintPath>lib\Elixis.dll</HintPath>
     </Reference>
@@ -89,6 +93,7 @@
     </Compile>
     <Compile Include="MA.cs" />
     <Compile Include="MA_Client.cs" />
+    <Compile Include="RSA.cs" />
     <Compile Include="Tray.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,7 +103,6 @@
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rect.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="Snapshot.cs" />
     <Compile Include="SysMsg.cs" />

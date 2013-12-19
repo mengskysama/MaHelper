@@ -55,6 +55,7 @@ namespace MAH
         public static int jx_wait = 0;
         public static int loop_time = 4000;
         public static int changecard = -1;
+        public static int onlyjx = 0;
 
         static DateTime time_SendAPBC = DateTime.Now.AddHours(-1.0);
         static DateTime time_GetCard = DateTime.Now.AddHours(-1.0);
@@ -223,7 +224,7 @@ namespace MAH
                     step--;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (exception == 1)
                     throw;
@@ -356,7 +357,7 @@ namespace MAH
                     step--;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (exception == 1)
                     throw;
@@ -690,6 +691,11 @@ namespace MAH
                                         else if (MA.fairylst[i].try_time < 2 && MA.fairylst[i].touched == 0)
                                         {
                                             //舔怪
+                                            if (onlyjx == 1)
+                                            {
+                                                Script.frm.LogUpdateFunction("不添普怪W");
+                                                continue;
+                                            }
                                             if (changecard != 1)
                                             {
                                                 Script.frm.LogUpdateFunction("进入配卡菜单");

@@ -22,7 +22,7 @@ namespace MAH
         public static string login_last2 = "";
 
         public static string url = "http://mabi.mengsky.net/";
-        public static string ua = "";
+        public static string ua = "Million/102 (GT-N7000; GT-N7000; 2.3.4) samsung/GT-N7000/GT-N7000:2.3.4/GRJ22/eng.build.20120314.185218:eng/release-keys";
 
         public static string GetNowStamp()
         {
@@ -36,14 +36,7 @@ namespace MAH
             return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
         }
 
-        public static int Login(string user, string pass, int ver)
-        {
-            string ret = HttpGet(url + "l4.php?u=" + user + "&p=" + pass + "&ver=" + ver);
-            if (ret != null && ret.IndexOf("1") != -1)
-                return 0;
-            else
-                return 1;
-        }
+
 
         public static string GetKey(int offset = 0)
         {

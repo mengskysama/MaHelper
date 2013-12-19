@@ -10,7 +10,18 @@ namespace MAH
     class AES
     {
 
-        public static string key = "ok";// "aaaaaaaaaaaaaaa";//rBwj1MIAivVN222b
+        public static RijndaelManaged rDel;
+        public static string key = "aaaaaaaaaaaaaaaa";// "aaaaaaaaaaaaaaa";//
+
+
+        public static void InitKey()
+        {
+            rDel = new RijndaelManaged();
+            if(MA.host == "game.ma.mobimon.com.tw:10001")
+            {
+                rDel.Key = UTF8Encoding.UTF8.GetBytes("rBwj1MIAivVN222b");
+            }
+        }
 
         /// <summary>
         /// 有密码的AES加密 
@@ -21,11 +32,11 @@ namespace MAH
         /// <returns></returns>
         public static string Encrypt(string toEncrypt)
         {
-            byte[] keyArray = UTF8Encoding.UTF8.GetBytes(key);
+            //byte[] keyArray = UTF8Encoding.UTF8.GetBytes(key);
             byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
 
-            RijndaelManaged rDel = new RijndaelManaged();
-            rDel.Key = keyArray;
+           //RijndaelManaged rDel = new RijndaelManaged();
+            //rDel.Key = keyArray;
             rDel.Mode = CipherMode.ECB;
             rDel.Padding = PaddingMode.PKCS7;
 
@@ -44,7 +55,9 @@ namespace MAH
         /// <returns></returns>
         public static string Decrypt(byte[] toEncryptArray)
         {
-            byte[] keyArray = UTF8Encoding.UTF8.GetBytes(key);
+            
+
+            byte[] keyArray = UTF8Encoding.UTF8.GetBytes("011218525486l6u1");
 
             RijndaelManaged rDel = new RijndaelManaged();
             rDel.Key = keyArray;
