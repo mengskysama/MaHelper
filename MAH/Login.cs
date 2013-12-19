@@ -56,6 +56,8 @@ namespace MAH
 
         private void Login_Load(object sender, EventArgs e)
         {
+            //string decryptstr = AES.Decrypt(Convert.FromBase64String("NzgOGTK08BvkZN5q8XvG6Q=="), "rBwj1MIAivVN222b");
+
             //string d;
             //d = Encoding.ASCII.GetString(b);
 
@@ -63,7 +65,7 @@ namespace MAH
             //MA.exploration_explore("50002", "5");
 
                 //byte[] undecryptbyte = HTTP.HttpPost1("http://game1-CBT.ma.sdo.com:10001/connect/app/exploration/area?cyt=1", "", "Cookie: S=pb9qdcjmknq2r195mlhbsp7n32", "Cookie2: $Version=1");
-                //string decryptstr = AES.Decrypt(undecryptbyte, "rBwj1MIAivVN222b");
+
                 //
 
  

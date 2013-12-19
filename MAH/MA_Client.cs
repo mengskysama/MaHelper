@@ -269,8 +269,8 @@ namespace MAH
 
                     if (MA.bc == MA.bcmax)
                     {
-                        Script.frm.LogUpdateFunction("BC已经溢出,退出探索");
-                        break;
+                        //Script.frm.LogUpdateFunction("BC已经溢出,退出探索");
+                        //break;
                     }
 
                     Thread.Sleep(3000);
@@ -303,7 +303,7 @@ namespace MAH
                         else
                         {
                             //强制日怪
-                            MA.exploration_fairy_floor(int.Parse(MA.myfairy_serial_id), MA.user_id);
+                            MA.exploration_fairy_floor(int.Parse(MA.myfairy_serial_id), MA.user_id, int.Parse(MA.myfairy_race_type));
                             //MA.bc
                             if (useautocard == 0)
                             {
@@ -631,7 +631,7 @@ namespace MAH
                                             {
                                                 continue;
                                             }
-                                            MA.exploration_fairy_floor(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id);
+                                            MA.exploration_fairy_floor(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id, int.Parse(MA.myfairy_race_type));
                                             //MA.bc
 
                                             if (useautocard == 0)

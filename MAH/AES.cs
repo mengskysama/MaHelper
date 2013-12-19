@@ -69,5 +69,20 @@ namespace MAH
 
             return UTF8Encoding.UTF8.GetString(resultArray);
         }
+
+        public static string Decrypt(byte[] toEncryptArray, string key)
+        {
+            byte[] keyArray = UTF8Encoding.UTF8.GetBytes(key);
+
+            RijndaelManaged rDel = new RijndaelManaged();
+            rDel.Key = keyArray;
+            rDel.Mode = CipherMode.ECB;
+            rDel.Padding = PaddingMode.PKCS7;
+
+            ICryptoTransform cTransform = rDel.CreateDecryptor();
+            byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+
+            return UTF8Encoding.UTF8.GetString(resultArray);
+        }
     }
 }

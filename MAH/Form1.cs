@@ -233,6 +233,7 @@ namespace MAH
 
             Log.Log_Create();
             RSA.Init();
+            AES.InitKey();
           
             pictureBox1.Hide();
 

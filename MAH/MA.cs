@@ -29,6 +29,7 @@ namespace MAH
         public static XmlDocument document = new XmlDocument();
 
         public static string myfairy_serial_id = "";
+        public static string myfairy_race_type = "";
         public static int remaining_rewards = 0;
         public static int user_id = 0;
         public static int ap = -1;
@@ -94,6 +95,7 @@ namespace MAH
             public int touched;
             public int start_time;
             public int touch;//用于更新时判断是否还在列表中
+            public int race_type;
         }
 
         public static List<MA_Card> cardlst = new List<MA_Card>();
@@ -411,6 +413,8 @@ namespace MAH
             {
                 ret += 8;
                 myfairy_serial_id = area_info_nodes[0].SelectNodes("./serial_id")[0].InnerText;
+                if (MA.host != "game.ma.mobimon.com.tw:10001")
+                    myfairy_race_type = area_info_nodes[0].SelectNodes("./race_type")[0].InnerText;
             }
 
             return ret;
@@ -422,6 +426,11 @@ namespace MAH
             List<ReqParama> reqparams = new List<ReqParama>();
             reqparams.Add(new ReqParama("serial_id", myfairy_serial_id));
             reqparams.Add(new ReqParama("user_id", user_id.ToString()));
+
+            if (MA.host != "game.ma.mobimon.com.tw:10001")
+            {
+                reqparams.Add(new ReqParama("race_type", myfairy_race_type.ToString()));
+            }
 
             string postdata = ma_prepare_request(reqparams);
 
@@ -637,6 +646,8 @@ namespace MAH
                         fairy_event.fairy_time_limit = int.Parse(node["fairy"]["time_limit"].InnerText);
                         fairy_event.fairy_put_down = int.Parse(node["put_down"].InnerText);
                         fairy_event.start_time = int.Parse(node["start_time"].InnerText);
+                        if (MA.host != "game.ma.mobimon.com.tw:10001")
+                            fairy_event.race_type = int.Parse(node["fairy"]["race_type"].InnerText);
                         fairy_event.touched = 0;
                         fairy_event.fucked = 0;
                         fairy_event.try_time = 0;
@@ -667,7 +678,11 @@ namespace MAH
         //编辑卡组
         public static void roundtable_edit()
         {
-            ma_request("/connect/app/roundtable/edit?cyt=1", "move=HJQrxs%2FKaF3hyO81WS2jdA%3D%3D%0A");
+            List<ReqParama> reqparams = new List<ReqParama>();
+            reqparams.Add(new ReqParama("move", "1"));
+
+            string postdata = ma_prepare_request(reqparams);
+            ma_request("/connect/app/roundtable/edit?cyt=1", postdata);
         }
 
         //use yao
@@ -692,12 +707,17 @@ namespace MAH
         }
 
         //get fairy info
-        public static void exploration_fairy_floor(int serial_id, int user_id)
+        public static void exploration_fairy_floor(int serial_id, int user_id, int race_type)
         {
             List<ReqParama> reqparams = new List<ReqParama>();
             reqparams.Add(new ReqParama("check", "1"));
             reqparams.Add(new ReqParama("serial_id", serial_id.ToString()));
             reqparams.Add(new ReqParama("user_id", user_id.ToString()));
+
+            if (MA.host != "game.ma.mobimon.com.tw:10001")
+            {
+                reqparams.Add(new ReqParama("race_type", race_type.ToString()));
+            }
 
             string postdata = ma_prepare_request(reqparams);
             ma_request("/connect/app/exploration/fairy_floor?cyt=1", postdata);
@@ -717,9 +737,9 @@ namespace MAH
         {
             List<ReqParama> reqparams = new List<ReqParama>();
             reqparams.Add(new ReqParama("user_id", uid));
-
-            string postdata = "lake_id=NzgOGTK08BvkZN5q8XvG6Q%3D%3D%0A&parts_id=NzgOGTK08BvkZN5q8XvG6Q%3D%3D%0A&"
-            + ma_prepare_request(reqparams);
+            reqparams.Add(new ReqParama("lake_id", "0"));
+            reqparams.Add(new ReqParama("parts_id", "0"));
+            string postdata = ma_prepare_request(reqparams);
 
             ma_request("/connect/app/battle/battle?cyt=1", postdata);
 
@@ -822,44 +842,6 @@ namespace MAH
                 cnt++;
                 Script.frm.LogUpdateFunction("战斗完成延迟等待");
                 Thread.Sleep(20000);
-            }
-
-            if (cnt == 0 && MA.host == "game1-CBT.ma.sdo.com:10001")
-            {
-                Script.frm.LogUpdateFunction("从我的数据库获取一个无名亚瑟!");
-                string ret = HTTP.HttpGet(HTTP.url + "dm123.php?t=get&u=" + HTTP.user + "&p=" + HTTP.pass);
-                if (ret != null && ret.Length > 1)
-                {
-                    string uid = DES.DecryptDES(ret, "11111111");
-
-                    try
-                    {
-                        battle_battle(uid);
-                    }
-                    catch (Exception ex)
-                    {
-                        Script.frm.LogUpdateFunction(ex.Message);
-                    }
-
-                    sb250.Add(uid);
-
-                    XmlNodeList battle_result_nodes = document.SelectNodes("/response/body/battle_result");
-
-                    if (battle_result_nodes.Count == 1)
-                    {
-                        if (battle_result_nodes[0]["winner"].InnerText == "1")
-                        {
-                            Script.frm.LogUpdateFunction("因子战胜利");
-                            yinzi_win++;
-                        }
-                        else
-                        {
-                            Script.frm.LogUpdateFunction("因子战失败");
-                            yinzi_lose++;
-                        }
-                        Thread.Sleep(20000);
-                    }
-                }
             }
         }
 
