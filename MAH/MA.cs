@@ -869,7 +869,11 @@ namespace MAH
             List<ReqParama> reqparams = new List<ReqParama>();
             reqparams.Add(new ReqParama("C", card));
             reqparams.Add(new ReqParama("lr", leader));
-            reqparams.Add(new ReqParama("deck_id", "1"));
+
+            if (MA.host != "game.ma.mobimon.com.tw:10001")
+            {
+                reqparams.Add(new ReqParama("deck_id", "1"));
+            }
 
             string postdata = ma_prepare_request(reqparams);
             ma_request("/connect/app/cardselect/savedeckcard?cyt=1", postdata);
