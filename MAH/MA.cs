@@ -450,11 +450,16 @@ namespace MAH
 
 
 
-        public static void exploration_explore_fairy(int serial_id, int user_id)
+        public static void exploration_explore_fairy(int serial_id, int user_id, int race_type)
         {
             List<ReqParama> reqparams = new List<ReqParama>();
             reqparams.Add(new ReqParama("serial_id", serial_id.ToString()));
             reqparams.Add(new ReqParama("user_id", user_id.ToString()));
+
+            if (MA.host != "game.ma.mobimon.com.tw:10001")
+            {
+                reqparams.Add(new ReqParama("race_type", race_type.ToString()));
+            }
 
             string postdata = ma_prepare_request(reqparams);
 
@@ -887,6 +892,11 @@ namespace MAH
             List<ReqParama> reqparams = new List<ReqParama>();
             reqparams.Add(new ReqParama("C", cards));
             reqparams.Add(new ReqParama("lr", leader));
+
+            if (MA.host != "game.ma.mobimon.com.tw:10001")
+            {
+                reqparams.Add(new ReqParama("deck_id", "1"));
+            }
 
             string postdata = ma_prepare_request(reqparams);
             ma_request("/connect/app/cardselect/savedeckcard?cyt=1", postdata);

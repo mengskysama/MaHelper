@@ -631,7 +631,7 @@ namespace MAH
                                             {
                                                 continue;
                                             }
-                                            MA.exploration_fairy_floor(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id, int.Parse(MA.myfairy_race_type));
+                                            MA.exploration_fairy_floor(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id, MA.fairylst[i].race_type);
                                             //MA.bc
 
                                             if (useautocard == 0)
@@ -681,7 +681,7 @@ namespace MAH
                                             Script.frm.LogUpdateFunction("切换探索卡组完成");
                                             Thread.Sleep(2000);
                                             Script.frm.LogUpdateFunction("日怪");
-                                            MA.exploration_explore_fairy(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id);
+                                            MA.exploration_explore_fairy(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id, MA.fairylst[i].race_type);
                                             MA.fairylst[i].fucked++;
                                             Script.frm.LogUpdateFunction("日怪完成延时等待");
                                             Thread t = new Thread(Script.SendCnt);
@@ -713,7 +713,7 @@ namespace MAH
                                             {
                                                 Script.frm.LogUpdateFunction("尝试第2次后不再继续");
                                             }
-                                            MA.exploration_explore_fairy(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id);
+                                            MA.exploration_explore_fairy(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id, MA.fairylst[i].race_type);
                                             MA.fairylst[i].touched = 1;
                                             Script.frm.LogUpdateFunction("舔怪完成延时等待");
                                             Thread t = new Thread(Script.SendCnt);
@@ -768,7 +768,7 @@ namespace MAH
                                             Thread.Sleep(2000);
                                         }
                                         Script.frm.LogUpdateFunction("日怪");
-                                        MA.exploration_explore_fairy(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id);
+                                        MA.exploration_explore_fairy(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id, MA.fairylst[i].race_type);
                                         Script.frm.LogUpdateFunction("日怪完成延时等待");
                                         MA.fairylst[i].fucked++;
                                         Thread t = new Thread(Script.SendCnt);
@@ -795,7 +795,7 @@ namespace MAH
                                         {
                                             Script.frm.LogUpdateFunction("尝试第2次后不再继续");
                                         }
-                                        MA.exploration_explore_fairy(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id);
+                                        MA.exploration_explore_fairy(MA.fairylst[i].fairy_serial_id, MA.fairylst[i].user_id, MA.fairylst[i].race_type);
                                         MA.fairylst[i].touched = 1;
                                         Script.frm.LogUpdateFunction("舔怪完成延时等待");
                                         Thread t = new Thread(Script.SendCnt);

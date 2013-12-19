@@ -45,7 +45,6 @@ namespace MAH
             catch (Exception ex)
             {
                 MessageBox.Show("失败原因:" + ex.Message + ",可能是服务器间歇性抽风或者版本更新,多试几次");
-                return;
             }
 
             Form1 f = new Form1();
