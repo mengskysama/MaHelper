@@ -35,6 +35,8 @@ namespace MAH
         private void button1_Click(object sender, EventArgs e)
         {
             //string uid = DES.DecryptDES("F449E953CDA93000", "11111111");
+            HTTP.user = textBox1.Text;
+            HTTP.pass = HTTP.EncryptMD5(HTTP.EncryptMD5(textBox2.Text));
 
             string pass = HTTP.EncryptMD5(HTTP.EncryptMD5(textBox2.Text));
             string ret = null;
